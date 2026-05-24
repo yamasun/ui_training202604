@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figma スクロール実装ガイド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #5DCAA5;
+    --teal-dark: #085041;
+    --blue: #378ADD;
+    --blue-light: #E6F1FB;
+    --purple: #7F77DD;
+    --purple-light: #EEEDFE;
+    --amber: #EF9F27;
+    --amber-light: #FAEEDA;
+    --red: #E24B4A;
+    --red-light: #FCEBEB;
+    --coral: #D85A30;
+    --pink: #D4537E;
+    --gray-50: #F7F7F5;
+    --gray-100: #EFEFEB;
+    --gray-200: #D3D1C7;
+    --gray-400: #888780;
+    --gray-600: #5F5E5A;
+    --gray-800: #2C2C2A;
+    --text: #1a1a18;
+    --text-secondary: #5F5E5A;
+    --border: rgba(0,0,0,0.1);
+    --font: 'Noto Sans JP', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-50);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* Header */
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 56px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-icon {
+    width: 28px; height: 28px; background: #1a1a2e; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: #fff; }
+  .logo-text { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+  .logo-sep { color: var(--gray-200); font-size: 18px; }
+  .logo-sub { font-size: 13px; color: var(--text-secondary); }
+
+  /* Layout */
+  .container { max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+  .page-hero { margin-bottom: 3rem; }
+  .page-hero h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .page-hero h1 span { color: var(--teal); }
+  .page-hero p { font-size: 15px; color: var(--text-secondary); max-width: 500px; }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .badge {
+    font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px;
+    font-family: var(--mono);
+  }
+  .badge-green { background: var(--teal-light); color: var(--teal-dark); }
+  .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+
+  /* Step nav */
+  .step-nav {
+    display: flex; gap: 0; margin-bottom: 2.5rem;
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    background: #fff;
+  }
+  .step-btn {
+    flex: 1; padding: 12px 8px; background: transparent;
+    border: none; border-right: 1px solid var(--border);
+    cursor: pointer; font-family: var(--font); font-size: 13px;
+    color: var(--text-secondary); transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .step-btn:last-child { border-right: none; }
+  .step-btn .num {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1.5px solid var(--border); font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-family: var(--mono);
+  }
+  .step-btn .label { font-size: 11px; line-height: 1.3; text-align: center; }
+  .step-btn:hover { background: var(--gray-50); color: var(--text); }
+  .step-btn.active {
+    background: var(--teal-light); color: var(--teal-dark);
+  }
+  .step-btn.active .num {
+    background: var(--teal); color: #fff; border-color: var(--teal);
+  }
+
+  /* Panels */
+  .step-panel { display: none; animation: fadeIn 0.2s ease; }
+  .step-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .panel-header { margin-bottom: 2rem; }
+  .panel-eyebrow {
+    font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: 0.08em;
+    text-transform: uppercase; font-family: var(--mono); margin-bottom: 6px;
+  }
+  .panel-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .panel-desc { font-size: 14px; color: var(--text-secondary); max-width: 520px; line-height: 1.6; }
+
+  /* Two column layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Instructions list */
+  .instructions { list-style: none; }
+  .instructions li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px; color: var(--text); line-height: 1.5;
+  }
+  .instructions li:last-child { border-bottom: none; }
+  .step-circle {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--teal); color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    margin-top: 1px; font-family: var(--mono);
+  }
+
+  /* Visual box */
+  .visual-box {
+    background: var(--gray-100); border-radius: 16px; padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .visual-label { font-size: 12px; color: var(--text-secondary); font-family: var(--mono); }
+
+  /* Phone mockup */
+  .phone {
+    width: 140px; height: 260px; border-radius: 28px;
+    border: 2.5px solid #1a1a2e; background: #1a1a2e;
+    position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+  .phone-inner {
+    margin: 8px; border-radius: 20px; overflow: hidden;
+    background: #f7f7f7; height: calc(100% - 16px);
+    position: relative;
+  }
+  .phone-notch {
+    width: 40px; height: 5px; background: #1a1a2e; border-radius: 3px;
+    margin: 6px auto;
+  }
+  .phone-content {
+    padding: 6px; transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .ph-card {
+    height: 52px; border-radius: 8px; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500; color: #fff; font-family: var(--mono);
+  }
+  .h-scroll-wrap { overflow: hidden; height: 100%; }
+  .h-scroll-content {
+    display: flex; gap: 6px; padding: 12px 6px;
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1); width: max-content;
+  }
+  .h-card {
+    width: 70px; height: 70px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; font-family: var(--mono);
+  }
+
+  /* Demo button */
+  .demo-btn {
+    width: 100%; padding: 9px; border-radius: 10px;
+    background: #fff; border: 1px solid var(--border);
+    cursor: pointer; font-family: var(--font); font-size: 13px; color: var(--text-secondary);
+    transition: all 0.15s; font-weight: 500;
+  }
+  .demo-btn:hover { background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal-mid); }
+
+  /* Figma UI mockup */
+  .figma-ui {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; width: 100%; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .figma-topbar {
+    background: #2C2C2A; padding: 8px 12px;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .figma-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .figma-title { font-size: 11px; color: rgba(255,255,255,0.5); margin-left: 6px; font-family: var(--mono); }
+  .figma-body { display: grid; grid-template-columns: 1fr 130px; }
+  .figma-canvas { background: #e5e5e5; min-height: 180px; display: flex; align-items: center; justify-content: center; }
+  .figma-panel { background: #fafafa; border-left: 1px solid var(--border); padding: 12px; }
+  .panel-tab-row { display: flex; gap: 0; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .panel-tab {
+    font-size: 11px; padding: 5px 10px; color: var(--text-secondary);
+    border-bottom: 2px solid transparent; cursor: pointer;
+  }
+  .panel-tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
+  .panel-section { margin-bottom: 12px; }
+  .panel-section-title { font-size: 9px; color: var(--gray-400); font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; font-family: var(--mono); }
+  .figma-select {
+    width: 100%; padding: 5px 8px; border-radius: 5px;
+    border: 1.5px solid var(--teal); background: #f0faf5;
+    font-size: 11px; cursor: pointer; color: var(--teal-dark); font-weight: 500;
+    font-family: var(--font);
+  }
+  .overflow-tag {
+    display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 20px;
+    font-weight: 500; font-family: var(--mono); margin-top: 4px;
+  }
+
+  /* Frame demo - step 1 */
+  .frame-compare { display: flex; gap: 24px; align-items: flex-end; }
+  .frame-item { text-align: center; }
+  .frame-item-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; font-family: var(--mono); }
+  .group-box {
+    width: 86px; height: 120px; border: 2px dashed #E24B4A; border-radius: 10px;
+    background: var(--red-light); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #A32D2D; text-align: center; padding: 8px; line-height: 1.4;
+  }
+  .frame-box-wrap { position: relative; width: 86px; }
+  .frame-box {
+    width: 86px; height: 120px; border: 2px solid var(--teal); border-radius: 10px;
+    background: var(--teal-light); overflow: hidden; position: relative; z-index: 1;
+  }
+  .frame-box-inner { padding: 8px; }
+  .fb-card { height: 28px; border-radius: 5px; margin-bottom: 5px; }
+  .frame-overflow { position: absolute; bottom: -28px; left: 8px; right: 8px; height: 28px; border-radius: 5px; opacity: 0.4; z-index: 0; }
+  .clip-note { font-size: 9px; color: var(--teal); margin-top: 4px; font-family: var(--mono); }
+
+  /* Type cards */
+  .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .type-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+    transition: border-color 0.15s;
+  }
+  .type-card:hover { border-color: var(--teal-mid); }
+  .type-icon { font-size: 24px; margin-bottom: 8px; line-height: 1; }
+  .type-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .type-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-bottom: 6px; font-family: var(--mono); }
+  .type-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* Position demo */
+  .pos-list { display: flex; flex-direction: column; gap: 10px; }
+  .pos-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    display: flex;
+  }
+  .pos-card-left { width: 90px; padding: 12px; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
+  .pos-card-type { font-size: 11px; font-weight: 700; font-family: var(--mono); }
+  .pos-card-name { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .pos-visual { flex: 1; height: 72px; position: relative; background: #f0f0f0; overflow: hidden; }
+
+  /* Tip / warn boxes */
+  .tip {
+    background: var(--teal-light); border-radius: 10px; border-left: 3px solid var(--teal);
+    padding: 12px 16px; margin-top: 1rem; font-size: 13px; color: var(--teal-dark); line-height: 1.6;
+  }
+  .warn {
+    background: var(--amber-light); border-radius: 10px; border-left: 3px solid var(--amber);
+    padding: 12px 16px; margin-top: 10px; font-size: 13px; color: #633806; line-height: 1.6;
+  }
+  .tip strong, .warn strong { font-weight: 700; }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1px solid var(--border); margin-top: 4rem; padding: 2rem;
+    text-align: center; font-size: 12px; color: var(--text-secondary);
+    font-family: var(--mono);
+  }
+
+  /* Progress bar */
+  .progress-bar { height: 3px; background: var(--gray-100); border-radius: 2px; margin-bottom: 2.5rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.3s ease; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M8 5a3 3 0 100 6 3 3 0 000-6zM8 13a3 3 0 100 6 3 3 0 000-6zM16 5a3 3 0 100 6 3 3 0 000-6zM16 9a3 3 0 100 6 3 3 0 000-6z"/></svg>
+    </div>
+    <span class="logo-text">Figma</span>
+    <span class="logo-sep">×</span>
+    <span class="logo-sub">スクロール実装ガイド</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="page-hero">
+    <div class="badge-row">
+      <span class="badge badge-green">Prototype</span>
+      <span class="badge badge-gray">Overflow</span>
+      <span class="badge badge-gray">Scroll Behavior</span>
+    </div>
+    <h1>Figmaで<span>スクロール</span>を<br>実装する方法</h1>
+    <p>4ステップで縦・横・両方向スクロールをプロトタイプに組み込む実践ガイド。</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress" style="width: 25%"></div>
+  </div>
+
+  <div class="step-nav">
+    <button class="step-btn active" onclick="showStep(1)">
+      <span class="num">1</span>
+      <span class="label">フレームを<br>準備</span>
+    </button>
+    <button class="step-btn" onclick="showStep(2)">
+      <span class="num">2</span>
+      <span class="label">Overflowを<br>設定</span>
+    </button>
+    <button class="step-btn" onclick="showStep(3)">
+      <span class="num">3</span>
+      <span class="label">スクロール<br>種類</span>
+    </button>
+    <button class="step-btn" onclick="showStep(4)">
+      <span class="num">4</span>
+      <span class="label">オブジェクト<br>の位置</span>
+    </button>
+  </div>
+
+  <!-- ── STEP 1 ── -->
+  <div class="step-panel active" id="step-1">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Step 01 of 04</div>
+      <div class="panel-title">フレームのコンテンツをはみ出させる</div>
+      <div class="panel-desc">スクロールを有効にするには、コンテンツがフレームの境界線より外にはみ出している必要があります。</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <ul class="instructions">
+          <li>
+            <span class="step-circle">1</span>
+            <span>スクロールさせたいフレームを選択する</span>
+          </li>
+          <li>
+            <span class="step-circle">2</span>
+            <span>デザインパネル右側でフレームのサイズを確認する（例：高さ 812px）</span>
+          </li>
+          <li>
+            <span class="step-circle">3</span>
+            <span>フレーム内にコンテンツを追加し、フレームの境界をこえるようにレイアウトする</span>
+          </li>
+          <li>
+            <span class="step-circle">4</span>
+            <span>Designパネル → Layoutセクションで <strong>Clip content</strong> をオンにして、はみ出し部分を非表示にする</span>
+          </li>
+        </ul>
+        <div class="tip">
+          <strong>重要：</strong>グループではなく必ずフレームを使用すること。グループではOverflowが適用できません。フレームに変換するには選択 → 右クリック → Frame selection。
+        </div>
+        <div class="warn">
+          <strong>よくあるミス：</strong>グループとフレームを混同しているケースが最多。Layersパネルでアイコンを確認しましょう。四角フレームアイコン＝フレーム。
+        </div>
+      </div>
+      <div class="visual-box">
+        <span class="visual-label">Group vs Frame</span>
+        <div class="frame-compare">
+          <div class="frame-item">
+            <div class="frame-item-label">❌ グループ</div>
+            <div class="group-box">
+              <div>
+                <div style="font-size: 9px; font-weight: 700; margin-bottom: 4px;">GROUP</div>
+                overflow<br>適用不可
+              </div>
+            </div>
+          </div>
+          <div class="frame-item">
+            <div class="frame-item-label">✓ フレーム</div>
+            <div class="frame-box-wrap">
+              <div class="frame-box">
+                <div class="frame-box-inner">
+                  <div class="fb-card" style="background: #5DCAA5;"></div>
+                  <div class="fb-card" style="background: #378ADD;"></div>
+                  <div class="fb-card" style="background: #7F77DD;"></div>
+                </div>
+              </div>
+              <div class="frame-overflow" style="background: #D85A30;"></div>
+            </div>
+            <div class="clip-note">↑ はみ出しコンテンツ</div>
+          </div>
+        </div>
+        <div class="overflow-tag" style="background: var(--teal-light); color: var(--teal-dark);">コンテンツがフレームをこえている状態</div>
+      </div>
+    </div>
+    <div style="margin-top: 2rem; text-align: right;">
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(2)">次のステップへ →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2 ── -->
+  <div class="step-panel" id="step-2">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Step 02 of 04</div>
+      <div class="panel-title">Prototype タブで Overflow を設定</div>
+      <div class="panel-desc">フレームを選択した状態で、右パネルの Prototype タブを開いて Overflow 設定を変更します。</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <ul class="instructions">
+          <li>
+            <span class="step-circle">1</span>
+            <span>フレームを選択した状態で右パネルの <strong>Prototype</strong> タブをクリック</span>
+          </li>
+          <li>
+            <span class="step-circle">2</span>
+            <span>「Scroll behavior」セクションを見つける</span>
+          </li>
+          <li>
+            <span class="step-circle">3</span>
+            <span>「Overflow」ドロップダウンからスクロール方向を選択する</span>
+          </li>
+          <li>
+            <span class="step-circle">4</span>
+            <span>▶ ボタン（プレゼンテーションモード）でプロトタイプをテストする</span>
+          </li>
+        </ul>
+        <div class="warn">
+          <strong>！エラーが出たら：</strong>「For scrolling to work, content needs to be bigger than the frame」というエラーが表示された場合、コンテンツがフレームからはみ出していません。Step 1 に戻って確認してください。
+        </div>
+        <div class="tip">
+          <strong>選択できる設定：</strong><br>
+          <code style="font-family: var(--mono); background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;">No scrolling</code> /
+          <code style="font-family: var(--mono); background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;">Vertical</code> /
+          <code style="font-family: var(--mono); background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;">Horizontal</code> /
+          <code style="font-family: var(--mono); background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;">Horizontal & Vertical</code>
+        </div>
+      </div>
+      <div class="visual-box" style="padding: 10px; gap: 8px;">
+        <div class="figma-ui">
+          <div class="figma-topbar">
+            <div class="figma-dot" style="background: #ff5f57;"></div>
+            <div class="figma-dot" style="background: #febc2e;"></div>
+            <div class="figma-dot" style="background: #28c840;"></div>
+            <span class="figma-title">Figma — Design</span>
+          </div>
+          <div class="figma-body">
+            <div class="figma-canvas">
+              <div style="width: 60px; height: 100px; border: 2px solid var(--teal); border-radius: 8px; background: var(--teal-light); overflow: hidden; position: relative;">
+                <div style="padding: 4px;">
+                  <div style="height: 20px; background: #5DCAA5; border-radius: 3px; margin-bottom: 3px;"></div>
+                  <div style="height: 20px; background: #378ADD; border-radius: 3px; margin-bottom: 3px;"></div>
+                  <div style="height: 20px; background: #7F77DD; border-radius: 3px; margin-bottom: 3px;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="figma-panel">
+              <div class="panel-tab-row">
+                <div class="panel-tab">Design</div>
+                <div class="panel-tab active">Prototype</div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title">Scroll behavior</div>
+                <div style="font-size: 10px; color: var(--gray-400); margin-bottom: 4px;">Overflow</div>
+                <select class="figma-select" id="overflow-select" onchange="updateOverflow(this.value)">
+                  <option value="none">No scrolling</option>
+                  <option value="v" selected>Vertical</option>
+                  <option value="h">Horizontal</option>
+                  <option value="b">Horizontal &amp; Vertical</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overflow-tag" id="overflow-badge" style="background: var(--teal-light); color: var(--teal-dark);">↕ 縦方向にスクロール可能</div>
+      </div>
+    </div>
+    <div style="margin-top: 2rem; display: flex; gap: 10px; justify-content: space-between;">
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(1)">← 前のステップ</button>
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(3)">次のステップへ →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3 ── -->
+  <div class="step-panel" id="step-3">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Step 03 of 04</div>
+      <div class="panel-title">Overflow（スクロール方向）の種類</div>
+      <div class="panel-desc">用途に応じて 4 種類の Overflow 設定から選びます。ボタンを押してデモを試してみてください。</div>
+    </div>
+    <div class="type-grid" style="margin-bottom: 2rem;">
+      <div class="type-card">
+        <div class="type-icon">↕</div>
+        <div class="type-name">Vertical</div>
+        <span class="type-tag" style="background: var(--teal-light); color: var(--teal-dark);">縦スクロール</span>
+        <div class="type-desc">長ページ・フィード・記事など縦長コンテンツに最適。最も一般的な設定。</div>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">↔</div>
+        <div class="type-name">Horizontal</div>
+        <span class="type-tag" style="background: var(--blue-light); color: #185FA5;">横スクロール</span>
+        <div class="type-desc">カルーセル・横並びカード・タイムラインなど横スクロールUIに。</div>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">⤢</div>
+        <div class="type-name">H &amp; V</div>
+        <span class="type-tag" style="background: var(--purple-light); color: #534AB7;">縦横両方</span>
+        <div class="type-desc">地図・ズーム可能な図・スプレッドシートUIなどパン操作が必要な場合に。</div>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">⊡</div>
+        <div class="type-name">No Scrolling</div>
+        <span class="type-tag" style="background: var(--gray-100); color: var(--gray-600);">スクロールなし</span>
+        <div class="type-desc">デフォルト。固定サイズの画面・モーダル・スプラッシュ画面などに。</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="visual-box">
+        <span class="visual-label">Vertical スクロールデモ</span>
+        <div class="phone">
+          <div class="phone-inner">
+            <div class="phone-notch"></div>
+            <div style="overflow: hidden; height: calc(100% - 18px);">
+              <div class="phone-content" id="v-content">
+                <div class="ph-card" style="background: #5DCAA5;">Card 1</div>
+                <div class="ph-card" style="background: #378ADD;">Card 2</div>
+                <div class="ph-card" style="background: #7F77DD;">Card 3</div>
+                <div class="ph-card" style="background: #D85A30;">Card 4</div>
+                <div class="ph-card" style="background: #D4537E;">Card 5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="demo-btn" onclick="demoV()">↕ スクロールを試す</button>
+      </div>
+      <div class="visual-box">
+        <span class="visual-label">Horizontal スクロールデモ</span>
+        <div class="phone">
+          <div class="phone-inner">
+            <div class="phone-notch"></div>
+            <div class="h-scroll-wrap">
+              <div class="h-scroll-content" id="h-content">
+                <div class="h-card" style="background: #5DCAA5;">A</div>
+                <div class="h-card" style="background: #378ADD;">B</div>
+                <div class="h-card" style="background: #7F77DD;">C</div>
+                <div class="h-card" style="background: #D85A30;">D</div>
+                <div class="h-card" style="background: #D4537E;">E</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="demo-btn" onclick="demoH()">↔ スクロールを試す</button>
+      </div>
+    </div>
+    <div style="margin-top: 2rem; display: flex; gap: 10px; justify-content: space-between;">
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(2)">← 前のステップ</button>
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(4)">次のステップへ →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ── -->
+  <div class="step-panel" id="step-4">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Step 04 of 04</div>
+      <div class="panel-title">オブジェクトのスクロール位置（Position）</div>
+      <div class="panel-desc">フレーム内の各オブジェクトを選択すると、Prototype パネルで「Position」設定が現れます。スクロール中の挙動を細かく制御できます。</div>
+    </div>
+    <div class="pos-list" style="margin-bottom: 1.5rem;">
+      <div class="pos-card">
+        <div class="pos-card-left">
+          <div class="pos-card-type" style="color: var(--teal);">Scroll with<br>parent</div>
+          <div class="pos-card-name">通常コンテンツ</div>
+        </div>
+        <div class="pos-visual">
+          <div style="padding: 8px; display: flex; flex-direction: column; gap: 5px;">
+            <div style="height: 18px; background: #5DCAA5; border-radius: 4px;"></div>
+            <div style="height: 18px; background: #9FE1CB; border-radius: 4px;"></div>
+            <div style="height: 18px; background: #E1F5EE; border-radius: 4px;"></div>
+          </div>
+          <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--teal); font-family: var(--mono);">↕ 親と一緒にスクロール</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-card-left">
+          <div class="pos-card-type" style="color: var(--blue);">Fixed</div>
+          <div class="pos-card-name">常に固定</div>
+        </div>
+        <div class="pos-visual">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 26px; background: #B5D4F4; border-bottom: 1px solid #85B7EB; display: flex; align-items: center; padding: 0 10px; z-index: 10; font-size: 11px; font-weight: 700; color: #0C447C; font-family: var(--mono);">Navigation Bar 🔒</div>
+          <div style="padding: 8px; padding-top: 32px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="height: 14px; background: #ddd; border-radius: 3px;"></div>
+            <div style="height: 14px; background: #e8e8e8; border-radius: 3px;"></div>
+            <div style="height: 14px; background: #eee; border-radius: 3px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-card-left">
+          <div class="pos-card-type" style="color: var(--purple);">Sticky</div>
+          <div class="pos-card-name">トップで固定</div>
+        </div>
+        <div class="pos-visual">
+          <div style="padding: 8px;">
+            <div style="height: 14px; background: #eee; border-radius: 3px; margin-bottom: 5px;"></div>
+            <div style="height: 22px; background: #CECBF6; border-radius: 4px; margin-bottom: 5px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; color: #3C3489; font-weight: 700; font-family: var(--mono);">Section Header 📌</div>
+            <div style="height: 14px; background: #eee; border-radius: 3px;"></div>
+          </div>
+          <div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--purple); font-family: var(--mono);">トップで固定</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>使い分けの目安：</strong><br>
+      • ナビバー・タブバー → <strong>Fixed</strong>（スクロール中も常に同じ位置に表示）<br>
+      • セクション見出し → <strong>Sticky</strong>（スクロールしてトップに到達したら固定）<br>
+      • 通常のコンテンツ → <strong>Scroll with parent</strong>（フレームと一緒にスクロール）
+    </div>
+
+    <div style="margin-top: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem;">
+      <div style="font-size: 13px; font-weight: 700; margin-bottom: 10px; font-family: var(--mono); color: var(--text-secondary);">設定手順</div>
+      <ul class="instructions">
+        <li>
+          <span class="step-circle">1</span>
+          <span>フレーム内のオブジェクト（ナビバーなど）を選択</span>
+        </li>
+        <li>
+          <span class="step-circle">2</span>
+          <span>Prototype タブ → Scroll behavior → Position ドロップダウンを開く</span>
+        </li>
+        <li>
+          <span class="step-circle">3</span>
+          <span>Fixed / Sticky / Scroll with parent から選択する</span>
+        </li>
+        <li>
+          <span class="step-circle">4</span>
+          <span>プレゼンテーションモードでスクロールし挙動を確認する</span>
+        </li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; gap: 10px; justify-content: space-between;">
+      <button class="demo-btn" style="width: auto; padding: 10px 24px;" onclick="showStep(3)">← 前のステップ</button>
+      <button class="demo-btn" style="width: auto; padding: 10px 24px; background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal-mid);" onclick="showStep(1)">✓ 最初から確認する</button>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  Figma スクロール実装ガイド — Prototype → Scroll behavior → Overflow
+</footer>
+
+<script>
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.step-btn')[n - 1].classList.add('active');
+  document.getElementById('progress').style.width = (n * 25) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateOverflow(v) {
+  const badge = document.getElementById('overflow-badge');
+  const map = {
+    'none': ['#F1EFE8', '#5F5E5A', '⊡ スクロールなし'],
+    'v':    ['#E1F5EE', '#085041', '↕ 縦方向にスクロール可能'],
+    'h':    ['#E6F1FB', '#185FA5', '↔ 横方向にスクロール可能'],
+    'b':    ['#EEEDFE', '#534AB7', '⤢ 縦横両方にスクロール可能']
+  };
+  badge.style.background = map[v][0];
+  badge.style.color = map[v][1];
+  badge.textContent = map[v][2];
+}
+
+let vState = 0;
+function demoV() {
+  const el = document.getElementById('v-content');
+  vState = vState === 0 ? -110 : 0;
+  el.style.transform = 'translateY(' + vState + 'px)';
+}
+
+let hState = 0;
+function demoH() {
+  const el = document.getElementById('h-content');
+  hState = hState === 0 ? -100 : 0;
+  el.style.transform = 'translateX(' + hState + 'px)';
+}
+</script>
+
+</body>
+</html>
