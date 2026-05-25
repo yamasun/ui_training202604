@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figma インタラクション作成方法</title>
+    <style>
+        :root {
+            --primary-color: #101827;
+            --accent-color: #00C1A3;
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #374151;
+            --border-color: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin: 0 0 10px 0;
+        }
+
+        .meta-info {
+            font-size: 14px;
+            color: #6B7280;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .approach-box {
+            background-color: #F3F4F6;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 35px;
+            border-radius: 0 8px 8px 0;
+            font-size: 15px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+
+        .step-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-item {
+            margin-bottom: 30px;
+        }
+
+        .step-title {
+            font-weight: bold;
+            font-size: 17px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-detail {
+            padding-left: 20px;
+        }
+
+        .nested-list {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .nested-list li {
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            background-color: #EEF2F6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #1F2937;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #EF4444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #F9FAFB;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tips-box {
+            background-color: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            padding: 2px 20px;
+            border-radius: 8px;
+            margin-top: 35px;
+        }
+
+        .tips-box h3 {
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+
+        .tips-box ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .tips-box li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #9CA3AF;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Figma インタラクション作成方法</h1>
+        <div class="meta-info">
+            <span><strong>UI / App & Webデザイン SNS運用  </strong></span>
+            <span>N.yamamoto</span>
+        </div>
+    </header>
+
+    <div class="approach-box">
+        <strong>APPROACH:</strong><br>
+        Figmaでインタラクションデザインを作成する操作方法を、初心者向けにステップバイステップで解説します。プロトタイピング機能を使用して、画面遷移、アニメーション、オーバーレイ表示などを設定できます。
+    </div>
+
+    <h2>● インタラクションデザインの基本操作方法（ステップ）</h2>
+    
+    <ul class="step-list">
+        <li class="step-item">
+            <div class="step-title">● ステップ1: デザインを準備する</div>
+            <div class="step-detail">
+                必要なフレーム（画面）とコンポーネントを作成する。<br>
+                <small style="color: #6B7280;">例: ログイン画面 → ホーム画面</small>
+            </div>
+        </li>
+
+        <li class="step-item">
+            <div class="step-title">● ステップ2: 「Prototype」タブに切り替える</div>
+            <div class="step-detail">
+                画面右上の <strong class="highlight">「Design」 → 「Prototype」</strong> タブをクリック。<br>
+                このモードでブルーノード（接続線）を設定します。
+            </div>
+        </li>
+
+        <li class="step-item">
+            <div class="step-title">● ステップ3: インタラクションを設定する</div>
+            <div class="step-detail">
+                ボタンや画像などの要素を選択し、ブルーの〇（ノード）を遷移先のフレームやコンポーネントまでドラッグして接続します。
+            </div>
+        </li>
+
+        <li class="step-item">
+            <div class="step-title">● ステップ4: 詳細設定を行う</div>
+            <div class="step-detail">
+                接続後、右側のパネルで以下の設定が可能：
+                
+                <ul class="nested-list">
+                    <li><strong>トリガー (Trigger) を選ぶ:</strong>
+                        <span class="badge">On Click (クリック)</span>, 
+                        <span class="badge">On Hover (ホバー)</span>, 
+                        <span class="badge">After Delay (自動遷移)</span> など...
+                    </li>
+                    <li><strong>アクション (Action) を選ぶ:</strong>
+                        <ul class="nested-list">
+                            <li><span class="badge">Navigate to</span> : 別画面への遷移</li>
+                            <li><span class="badge">Open overlay</span> : オーバーレイ（モーダルなど）の表示</li>
+                            <li><span class="badge">Change to</span> : バリアント切替（Toggleなど）</li>
+                            <li><span class="badge">Scroll to</span> : 同一画面内のスクロール</li>
+                        </ul>
+                    </li>
+                    <li><strong>アニメーション (Animation) を選ぶ:</strong>
+                        <span class="badge">Instant (即時切替)</span>, 
+                        <span class="badge">Dissolve (フェード切替)</span>, 
+                        <span class="badge">Slide In/Out (スライドアニメーション)</span>, 
+                        <span class="badge">Smart Animate (自然な動き / 同名レイヤー間で補間)</span>
+                        <br><small style="color: #6B7280;">※ Duration（アニメーション時間）と Easing（加減速）も調整可能</small>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="step-item">
+            <div class="step-title">● ステップ5: プレビューで確認</div>
+            <div class="step-detail">
+                上部の<strong>「Present」</strong>ボタンをクリックして動作を確認。<br>
+                スマホやPCレイアウトで実機風のプレビューが可能です。
+            </div>
+        </li>
+    </ul>
+
+    <h2>● よく使う例</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>シチュエーション</th>
+                <th>操作例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>・画面遷移</td>
+                <td>ボタンから別フレームに <span class="badge">On Click</span> + <span class="badge">Navigate to</span></td>
+            </tr>
+            <tr>
+                <td>・モーダル表示</td>
+                <td>ボタンに <span class="badge">On Click</span> + <span class="badge">Open Overlay</span></td>
+            </tr>
+            <tr>
+                <td>・タブ切替</td>
+                <td>コンポーネントに <span class="badge">Change to</span> を設定（Variants使用）</td>
+            </tr>
+            <tr>
+                <td>・スライドメニュー</td>
+                <td><span class="badge">Smart Animate</span> と <span class="badge">Move In</span> を組み合わせる</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tips-box">
+        <h3>💡 補足Tips</h3>
+        <ul>
+            <li><strong>Variants + Change to:</strong> 状態変化（オン/オフ、開閉）の実装に最適です。</li>
+            <li><strong>Smart Animate:</strong> 同じ名前のレイヤー間でのみアニメーションが適用されます。</li>
+            <li>1つの要素に複数のインタラクション（クリック＋ホバーなど）を設定できます。</li>
+        </ul>
+    </div>
+
+    <footer>
+        Figma インタラクション作成方法 | N.Yamamot / THU 情報デザイン
+    </footer>
+</div>
+
+</body>
+</html>
