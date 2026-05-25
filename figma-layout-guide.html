@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figma オートレイアウト 完全ガイド</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        
+        :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #5DCAA5;
+    --teal-dark: #085041;
+    --blue: #378ADD;
+    --blue-light: #E6F1FB;
+    --purple: #7F77DD;
+    --purple-light: #EEEDFE;
+    --amber: #EF9F27;
+    --amber-light: #FAEEDA;
+    --red: #E24B4A;
+    --red-light: #FCEBEB;
+    --coral: #D85A30;
+    --pink: #D4537E;
+    --gray-50: #F7F7F5;
+    --gray-100: #EFEFEB;
+    --gray-200: #D3D1C7;
+    --gray-400: #888780;
+    --gray-600: #5F5E5A;
+    --gray-800: #2C2C2A;
+    --text: #1a1a18;
+    --text-secondary: #5F5E5A;
+    --border: rgba(0,0,0,0.1);
+    --font: 'Noto Sans JP', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --card: #e6e6e6;
+    --accent: #00f5a0;
+ß            }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #c19eff 0%, #f0dbff 100%);
+            padding: 140px 20px 100px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .steps {
+            display: grid;
+            gap: 100px;
+            padding: 100px 0;
+        }
+        
+        .step {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: var(--accent);
+            color: #000;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(0, 245, 160, 0.3);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 24px;
+            color: white;
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            margin-bottom: 28px;
+        }
+        
+        .image-container {
+            margin: 32px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #333;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .tip {
+            background: #e6e6e6;
+            border-left: 5px solid var(--accent);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 32px 0;
+        }
+        
+        .highlight {
+            background: rgba(0, 245, 160, 0.12);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: var(--accent);
+        }
+        
+        .keyboard {
+            background: #333;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 26, 26, 0.96);
+            padding: 14px 28px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 100;
+            border: 1px solid #333;
+            backdrop-filter: blur(12px);
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 36px;
+            margin: 40px 0;
+        }
+        
+        ul {
+            padding-left: 28px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 80px 20px 60px;
+            color: var(--text-secondary);
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <span style="color: #00f5a0; font-weight: 700;">FIGMA</span>
+        <span style="color: #aaa;">オートレイアウト マスターガイド</span>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Figma オートレイアウト<br>完全攻略</h1>
+            <p>画像付きで徹底解説！<br>基本から実践まで、プロが使うテクニックをステップバイステップで解説します。</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="steps">
+
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h2>オートレイアウトを追加する</h2>
+                    <p>Figmaでオートレイアウトを使う最初のステップです。要素を選択した状態で適用すると、自動的にフレームが作成され、レイアウトが制御可能になります。</p>
+                    
+                    <div class="image-container">
+                        <img src="https://wp.imagy.app/wp-content/uploads/2024/01/auto-layouts-in-figma-768x432.png" alt="Figmaで要素を選択してオートレイアウトを追加する画面" style="width:100%;">
+                    </div>
+                    
+                    <div class="card">
+                        <strong>追加方法</strong><br><br>
+                        ・ショートカット：<span class="highlight">Shift + A</span><br>
+                        ・右サイドバー「デザイン」タブ → <strong>Auto Layout</strong> の＋ボタン<br>
+                        ・右クリック → 「オートレイアウトを追加」
+                    </div>
+
+                    <div class="tip">
+                        <strong>重要ポイント：</strong> オートレイアウトは<strong>フレーム</strong>にしか適用できません。複数の要素を選択すると自動でフレームが作られます。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h2>方向（Direction）と整列を設定</h2>
+                    <p>縦並びか横並びかを選び、子要素の配置方向を決定します。</p>
+                    
+                    <div class="image-container">
+                        <img src="https://storage.designup.jp/blog/uikit/uikit-figma-row-component-05.png" alt="Figma オートレイアウトの方向設定（Vertical / Horizontal）" style="width:100%;">
+                    </div>
+                    
+                    <div class="card">
+                        <strong>主な方向</strong><br><br>
+                        <strong>Vertical（縦方向）</strong>：リスト、フォーム、カード内の情報<br>
+                        <strong>Horizontal（横方向）</strong>：ナビゲーション、ボタングループ、タグ<br>
+                        <strong>Grid</strong>：写真ギャラリーなど
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h2>間隔（Gap）と余白（Padding）を調整</h2>
+                    <p>要素間のスペースと、フレーム内の余白を細かく設定できます。</p>
+                    
+                    <div class="image-container">
+                        <img src="https://storage.designup.jp/blog/uikit/uikit-figma-style-space-01.png" alt="Figma Auto LayoutのGapとPadding設定例" style="width:100%;">
+                    </div>
+                    
+                    <div class="card">
+                        <strong>設定できる項目</strong><br><br>
+                        • <strong>Gap</strong>：要素同士の間隔（個別設定も可能）<br>
+                        • <strong>Padding</strong>：上下左右それぞれ指定可能<br>
+                        • <strong>Alignment</strong>：左寄せ・中央・右寄せ・スペース間隔均等
+                    </div>
+                    
+                    <div class="tip">
+                        Gapの値を変更すると、すべての子要素間の距離が一括で変わります。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h2>リサイズ設定（Hug / Fill / Fixed）</h2>
+                    <p>これがオートレイアウトの真髄です。コンテンツ量に応じて自動調整されるよう設定します。</p>
+                    
+                    <div class="image-container">
+                        <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/h/hiromisatoh/20230420/20230420160701.gif" alt="Figma Hug contents vs Fill container の違い" style="width:100%;">
+                    </div>
+                    
+                    <div class="card">
+                        <strong>3種類のリサイズ設定</strong><br><br>
+                        <strong>Hug contents</strong>：中身のコンテンツに合わせて自動でサイズ調整（ボタンに最適）<br>
+                        <strong>Fill container</strong>：親要素いっぱいに広がる（テキスト入力欄など）<br>
+                        <strong>Fixed</strong>：固定サイズ（アイコンなど）
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 実践例 -->
+        <div class="card">
+            <h2 style="margin-bottom: 28px;">📌 実践例：ボタンの作り方</h2>
+            <ol style="line-height: 2.1; font-size: 1.15rem;">
+                <li>テキストと背景のRectangleを作成</li>
+                <li>両方を選択して <span class="highlight">Shift + A</span></li>
+                <li>Horizontal方向に設定</li>
+                <li>テキストを <strong>Hug</strong>、フレームを <strong>Hug</strong> に設定</li>
+                <li>Paddingを左右24px、上下12pxに調整</li>
+            </ol>
+        </div>
+
+        <!-- 高度なTips -->
+        <div class="card">
+            <h2 style="margin-bottom: 24px;">🚀 高度な活用Tips</h2>
+            <ul>
+                <li>オートレイアウトを<strong>入れ子（ネスト）</strong>にすることで複雑なレイアウトも構築可能</li>
+                <li>Component + Variantsと組み合わせるとデザインシステムが爆速で作れる</li>
+                <li>テキストを長くしてもレイアウトが崩れないようにHugを活用</li>
+                <li>「Ignore Auto Layout」で一部の要素だけルールから外すことも可能</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        <p><strong>Figma オートレイアウト 完全ガイド</strong> — 効率的なUI制作のために</p>
+        <p style="margin-top: 16px; font-size: 0.95rem;">2026年5月作成 | 画像は解説用サンプルです</p>
+    </footer>
+</body>
+</html>
