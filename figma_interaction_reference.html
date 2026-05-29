@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UIインタラクション種類一覧</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      padding: 40px;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    section {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      border-left: 6px solid #4f46e5;
+      padding-left: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef2ff;
+    }
+
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .footer {
+      margin-top: 40px;
+      color: #777;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 UI / UX インタラクション種類一覧</h1>
+    <p class="subtitle">
+      スマートフォンアプリ・Webサービス制作における代表的なインタラクションをカテゴリ別に整理したリファレンス。
+    </p>
+
+    <section>
+      <h2>1. タッチ / ジェスチャーインタラクション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>タップ</td>
+          <td>画面上の要素を1回押す</td>
+          <td>ボタン、リンク</td>
+        </tr>
+        <tr>
+          <td>ダブルタップ</td>
+          <td>素早く2回押す</td>
+          <td>画像ズーム、いいね</td>
+        </tr>
+        <tr>
+          <td>長押し</td>
+          <td>一定時間押し続ける</td>
+          <td>コンテキストメニュー</td>
+        </tr>
+        <tr>
+          <td>スワイプ</td>
+          <td>指を滑らせて移動</td>
+          <td>カルーセル、メニュー表示</td>
+        </tr>
+        <tr>
+          <td>ピンチイン / アウト</td>
+          <td>2本指で縮小・拡大</td>
+          <td>マップ、画像拡大</td>
+        </tr>
+        <tr>
+          <td>ドラッグ & ドロップ</td>
+          <td>要素を掴んで移動</td>
+          <td>並び替え、ファイル移動</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. マウス / ポインターインタラクション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>ホバー</td>
+          <td>ポインターを要素上に乗せる</td>
+          <td>ツールチップ表示</td>
+        </tr>
+        <tr>
+          <td>クリック</td>
+          <td>マウスボタンを押す</td>
+          <td>ボタン、リンク</td>
+        </tr>
+        <tr>
+          <td>ダブルクリック</td>
+          <td>素早く2回クリック</td>
+          <td>編集開始</td>
+        </tr>
+        <tr>
+          <td>スクロール</td>
+          <td>ページを上下移動</td>
+          <td>無限スクロール</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. ビジュアル・トランジション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>フェードイン / アウト</td>
+          <td>徐々に表示・非表示</td>
+          <td>モーダル表示</td>
+        </tr>
+        <tr>
+          <td>スライドイン / アウト</td>
+          <td>横・縦に移動しながら表示</td>
+          <td>サイドメニュー</td>
+        </tr>
+        <tr>
+          <td>スケールアニメーション</td>
+          <td>拡大縮小の動き</td>
+          <td>ボタン押下エフェクト</td>
+        </tr>
+        <tr>
+          <td>ローディング表示</td>
+          <td>処理中を視覚化</td>
+          <td>スピナー、進捗バー</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. フィードバックインタラクション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>サウンド</td>
+          <td>音で操作結果を伝える</td>
+          <td>送信音、通知音</td>
+        </tr>
+        <tr>
+          <td>バイブレーション</td>
+          <td>振動によるフィードバック</td>
+          <td>スマホタップ反応</td>
+        </tr>
+        <tr>
+          <td>ステータス変化</td>
+          <td>状態の視覚変化</td>
+          <td>ON/OFF切替</td>
+        </tr>
+        <tr>
+          <td>トースト通知</td>
+          <td>一時的な通知表示</td>
+          <td>保存完了通知</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. ナビゲーション・トランジション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>ページ遷移アニメーション</td>
+          <td>画面遷移時の動き</td>
+          <td>スマホアプリ遷移</td>
+        </tr>
+        <tr>
+          <td>タブ切り替え</td>
+          <td>内容を切り替えて表示</td>
+          <td>ニュースカテゴリ</td>
+        </tr>
+        <tr>
+          <td>モーダル / ポップアップ</td>
+          <td>一時的なオーバーレイ表示</td>
+          <td>確認ダイアログ</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. マイクロインタラクション</h2>
+      <table>
+        <tr>
+          <th>種類</th>
+          <th>説明</th>
+          <th>使用例</th>
+        </tr>
+        <tr>
+          <td>トグルアニメーション</td>
+          <td>ON/OFF切替の細かな動き</td>
+          <td>設定画面</td>
+        </tr>
+        <tr>
+          <td>いいねアニメーション</td>
+          <td>操作に感情表現を加える</td>
+          <td>SNSのハート演出</td>
+        </tr>
+        <tr>
+          <td>入力フィードバック</td>
+          <td>リアルタイム検証</td>
+          <td>パスワード強度表示</td>
+        </tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      UI / UX Design Interaction Reference | Created for Figma & UI Design Learning
+    </div>
+  </div>
+</body>
+</html>
