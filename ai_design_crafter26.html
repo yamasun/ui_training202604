@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI時代のデザイナーはデザイン作業者にあらず。AIイマジニア / デザインクラフターとは｜N.Yamamoto</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #eeece8;
+    --border: #d8d5ce;
+    --accent: #1a6fd4;
+    --accent2: #00967a;
+    --warn: #d94f4f;
+    --text-primary: #1a1a1f;
+    --text-secondary: #484848;
+    --text-muted: #888078;
+    --heading-font: 'Noto Serif JP', serif;
+    --body-font: 'Noto Sans JP', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--body-font);
+    font-size: 15px;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site-logo {
+    font-family: var(--heading-font);
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .site-logo span { color: var(--accent); }
+  .header-tag {
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 3px 8px;
+    letter-spacing: .05em;
+  }
+
+  /* Hero */
+  .hero {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 24px 32px;
+  }
+
+  .category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .category-badge::before {
+    content: '';
+    display: block;
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1.article-title {
+    font-family: var(--heading-font);
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+    letter-spacing: .02em;
+    margin-bottom: 24px;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .author-name {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .meta-dot { color: var(--border); }
+
+  .lead-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+  .lead-text strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .free-notice {
+    background: linear-gradient(135deg, rgba(74,158,255,.08), rgba(0,212,170,.06));
+    border: 1px solid rgba(74,158,255,.25);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 28px 0;
+  }
+  .free-notice strong { color: var(--accent2); }
+
+  /* TOC */
+  .toc {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 36px 0 48px;
+  }
+  .toc-title {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+  }
+  .toc ol li {
+    counter-increment: toc;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .toc ol li:last-child { border-bottom: none; }
+  .toc ol li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+    min-width: 22px;
+    font-family: monospace;
+  }
+  .toc ol li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .toc ol li a:hover { color: var(--text-primary); }
+
+  /* Divider */
+  hr.section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* Sections */
+  .article-body {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .article-section {
+    margin-bottom: 64px;
+  }
+
+  .section-number {
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: monospace;
+    margin-bottom: 8px;
+  }
+
+  h2.section-title {
+    font-family: var(--heading-font);
+    font-size: clamp(20px, 3.5vw, 26px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+  }
+  h2.section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  p strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* Bullet lists */
+  .styled-list {
+    list-style: none;
+    margin: 20px 0;
+  }
+  .styled-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    border-bottom: 1px solid rgba(37,42,58,.6);
+  }
+  .styled-list li:last-child { border-bottom: none; }
+  .styled-list li::before {
+    content: '›';
+    color: var(--accent);
+    font-size: 16px;
+    line-height: 1.4;
+    min-width: 14px;
+  }
+  .styled-list li strong { color: var(--text-primary); font-weight: 500; }
+
+  /* 3-column grid for job types */
+  .job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .job-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .job-card-label {
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-family: monospace;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .job-card.ai .job-card-label { color: var(--text-muted); }
+  .job-card.human .job-card-label { color: var(--accent2); }
+  .job-card.new .job-card-label { color: var(--accent); }
+
+  .job-card-title {
+    font-family: var(--heading-font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+  .job-card ul {
+    list-style: none;
+  }
+  .job-card ul li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(37,42,58,.5);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .job-card ul li:last-child { border-bottom: none; }
+  .job-card.ai ul li::before { content: '—'; color: var(--text-muted); font-size: 11px; }
+  .job-card.human ul li::before { content: '✓'; color: var(--accent2); font-size: 11px; }
+  .job-card.new ul li::before { content: '+'; color: var(--accent); font-size: 12px; font-weight: 700; }
+
+  /* Code block */
+  .code-block {
+    background: #e8e6e1;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    overflow-x: auto;
+  }
+  .code-block .code-key { color: var(--accent); font-weight: 600; }
+  .code-block .code-val { color: var(--text-primary); }
+
+  /* Checklist */
+  .checklist {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    min-width: 18px;
+    margin-top: 2px;
+    background: var(--surface);
+  }
+
+  /* Warning list (don'ts) */
+  .dont-list {
+    list-style: none;
+    margin: 20px 0;
+  }
+  .dont-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    border-bottom: 1px solid rgba(37,42,58,.6);
+  }
+  .dont-list li:last-child { border-bottom: none; }
+  .dont-list li::before {
+    content: '✕';
+    color: var(--warn);
+    font-size: 12px;
+    min-width: 14px;
+    margin-top: 3px;
+  }
+
+  /* Summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(74,158,255,.06), rgba(0,212,170,.04));
+    border: 1px solid rgba(74,158,255,.2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 40px 0;
+  }
+  .summary-box p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .summary-box p:last-child { margin-bottom: 0; }
+  .summary-box strong { color: var(--accent2); }
+
+  /* Inline emphasis */
+  em.highlight {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* References */
+  .references {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 48px 0 0;
+  }
+  .references h3 {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .references ul { list-style: none; }
+  .references ul li {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .references ul li:last-child { border-bottom: none; }
+  .references ul li a {
+    color: var(--accent);
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .job-grid { grid-template-columns: 1fr; }
+    h1.article-title { font-size: 24px; }
+    .toc, .checklist, .references { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="site-logo">NOBX <span>DESIGN</span></div>
+    <div class="header-tag">AI × デザイン</div>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="category-badge">Design &amp; AI</div>
+    <h1 class="article-title">AI時代、ただのデザイン作業者になるな<br>AIイマジニア / デザインクラフターとは</h1>
+    <div class="article-meta">
+      <span class="author-name">N.Yamamoto</span>
+      <span class="meta-dot">·</span>
+      <span>2026年6月</span>
+      <span class="meta-dot">·</span>
+    </div>
+
+    <p class="lead-text">
+      AIでデザイン制作が速くなるほど、デザイナーの価値説明は難しくなります。
+    </p>
+    <p class="lead-text">
+      <strong>「手を動かせること」</strong>だけで勝負すると、AIと価格競争になります。
+    </p>
+    <p class="lead-text">
+      この記事では、海外メディアで話題になっているAI時代の新しいデザイン職の動きを、一次情報に近い調査と研究へ戻して整理します。
+      読み終わると、AIに任せる仕事、人間が締める仕事、これから増やすべき仕事が分かります。
+    </p>
+
+<!--
+    <div class="free-notice">
+      📖 この記事は<strong>全文無料（期間限定）</strong>で閲覧できます。
+    </div>
+/-->
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#section1">AIでデザインの役割が崩れ始めた</a></li>
+        <li><a href="#section2">一次情報から見える変化</a></li>
+        <li><a href="#section3">デザイナーの仕事は3つに分かれる</a></li>
+        <li><a href="#section4">今日から変える制作フロー</a></li>
+        <li><a href="#section5">やってはいけない適応</a></li>
+        <li><a href="#section6">今日やるチェックリスト</a></li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="article-body">
+
+    <!-- Section 1 -->
+    <section class="article-section" id="section1">
+      <div class="section-number">01 / 06</div>
+      <h2 class="section-title">AIでデザインの役割が崩れ始めた</h2>
+
+      <p>結論から言うと、AI時代に危ないのは「デザイナー」という肩書きではありません。</p>
+      <p>危ないのは、<strong>デザインを「作業」だけで説明している状態</strong>です。</p>
+      <p>Fast Companyなどの海外メディアでは、<strong>「AIイマジニア」「デザインクラフター」「ビルダー」</strong>のような肩書きが出てきます。この表現だけを見ると、単なる流行語に見えます。ただし、一次情報へ戻ると、起きている変化はもう少し実務的です。</p>
+      <p>AIは、デザインの一部作業を速くします。ラフ案、画像案、UI案、文章案、プロトタイプ案は、以前より短時間で出せます。その結果、デザイナーに残る仕事は「作ること」だけではなくなります。</p>
+
+      <ul class="styled-list">
+        <li><strong>何を作るべきか決める</strong></li>
+        <li><strong>誰に向けるか決める</strong></li>
+        <li><strong>どの案を残すか判断する</strong></li>
+        <li><strong>使える品質へ仕上げる</strong></li>
+        <li><strong>実装や配信までつなぐ</strong></li>
+        <li><strong>結果を見て次へ戻す</strong></li>
+      </ul>
+
+      <p>ここまで含めて働ける人が、AI時代のデザイナーです。逆に、AI出力を眺めて「いい感じ」を選ぶだけなら、価値は下がります。AIの出力が増えるほど、判断の浅さも増えるからです。</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Section 2 -->
+    <section class="article-section" id="section2">
+      <div class="section-number">02 / 06</div>
+      <h2 class="section-title">一次情報から見える変化</h2>
+
+      <p>一次情報に近い研究や調査を見ると、デザイン職の変化は3つに整理できます。</p>
+
+      <p><strong>① AIエージェントが制作前工程へ入ってくること</strong></p>
+      <p>arXivに公開された「Imagining Design Workflows in Agentic AI Futures」では、10人のプロデザイナーが、AIエージェントと協働する未来のワークフローを検討しています。この研究は、AIエージェントの役割を、単なる生成ではなく、インスピレーション整理やアイデア出しの支援として扱っています。</p>
+      <p>重要なのは、デザイナーの意図をAIへどう説明するかです。プロンプトだけでは足りません。<strong>背景、目的、制約、判断基準</strong>まで渡す必要があります。</p>
+
+      <p><strong>② AIスキルが採用シグナルになり始めていること</strong></p>
+      <p>2026年1月に公開された採用実験の論文では、英国・米国・ドイツの採用担当者1,725人を対象に、AIスキルが面接招待へ与える影響を検証しています。対象職種には<strong>グラフィックデザイナー、オフィスアシスタント、ソフトウェアエンジニア</strong>が含まれます。</p>
+      <p>結果として、AIスキルは面接招待確率をおよそ8〜15ポイント高めました。ただし、グラフィックデザイナーでは効果が弱めでした。つまり、デザイナーは「AIを使えます」だけでは弱いです。<strong>AIで何を改善し、どこを人間が担保するかまで説明できる必要があります</strong>。</p>
+
+      <p><strong>③ Webデザイン市場で価格競争が強まっていること</strong></p>
+      <p>TechRadarが紹介した20iの2026年調査では、米国のWebデザイン専門職500人が対象です。76%が、AI利用の拡大を将来の最大懸念に挙げています。75%は、AIによる競争が過去1年で事業へ影響したと答えています。ここから分かるのは、AIが「デザインを消す」ことではありません。安く速い制作物が増え、デザイナー側が<strong>自分の価値を説明し直す</strong>必要が出ていることです。</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Section 3 -->
+    <section class="article-section" id="section3">
+      <div class="section-number">03 / 06</div>
+      <h2 class="section-title">デザイナーの仕事は3つに分かれる</h2>
+
+      <p>これからのデザイナーの仕事は、3つに分かれます。</p>
+
+      <div class="job-grid">
+        <div class="job-card ai">
+          <div class="job-card-label">01 — AIへ渡す仕事</div>
+          <div class="job-card-title">速度と量はAIに任せる</div>
+          <ul>
+            <li>参考事例の整理</li>
+            <li>ラフ案出し</li>
+            <li>コピー案出し</li>
+            <li>画像バリエーション生成</li>
+            <li>UIパターン出し</li>
+            <li>ムードボード作成</li>
+            <li>チェックリスト化</li>
+          </ul>
+        </div>
+        <div class="job-card human">
+          <div class="job-card-label">02 — 人間が締める仕事</div>
+          <div class="job-card-title">判断と品質は人間が担う</div>
+          <ul>
+            <li>目的設定</li>
+            <li>顧客理解</li>
+            <li>ブランド判断</li>
+            <li>情報設計</li>
+            <li>文字の読みやすさ</li>
+            <li>権利と商用利用確認</li>
+            <li>最終品質判断</li>
+          </ul>
+        </div>
+        <div class="job-card new">
+          <div class="job-card-label">03 — 新しく増える仕事</div>
+          <div class="job-card-title">AI時代の設計者へ</div>
+          <ul>
+            <li>AIへ渡す制作仕様の設計</li>
+            <li>出力の評価基準作成</li>
+            <li>制作プロセスの自動化</li>
+            <li>デザインと実装の接続</li>
+            <li>社内ルールの整備</li>
+            <li>クライアントへのAI利用説明</li>
+            <li>成果データを次の制作へ戻す仕組み作り</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>Figmaは、Figma MakeやMCP連携を通じて、AIモデルやエージェントがデザインやプロトタイプの文脈へアクセスしやすい方向へ進めています。これは、デザインと実装の境界が薄くなる動きです。</p>
+      <p>デザイナーがFigma上で見た目だけを整え、実装は別の誰かへ渡す。この分業だけでは、AIエージェント時代の速度に合いにくくなります。見た目、意図、構造、コード、配信後の改善まで、どこかでつなぐ人が必要です。そのつなぎ役が、これからのデザイナーの価値になります。</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Section 4 -->
+    <section class="article-section" id="section4">
+      <div class="section-number">04 / 06</div>
+      <h2 class="section-title">今日から変える制作フロー</h2>
+
+      <p>AI時代のデザイナーは、制作前に5つだけ書くべきです。いきなり画像生成ツールを開く必要はありません。先に、AIへ渡す設計書を作ります。</p>
+
+      <ul class="styled-list">
+        <li><strong>目的</strong></li>
+        <li><strong>読者</strong></li>
+        <li><strong>媒体</strong></li>
+        <li><strong>判断基準</strong></li>
+        <li><strong>禁止事項</strong></li>
+      </ul>
+
+      <p>たとえば、noteサムネならこうです。</p>
+
+      <div class="code-block">
+        <span class="code-key">目的：</span><br>
+        <span class="code-val">note一覧でスクロールを止め、記事タイトルを読ませる</span><br><br>
+        <span class="code-key">読者：</span><br>
+        <span class="code-val">AIで制作時間を短縮したいが、安っぽいAI感を避けたいデザイナー</span><br><br>
+        <span class="code-key">媒体：</span><br>
+        <span class="code-val">noteサムネイル 16:9</span><br><br>
+        <span class="code-key">判断基準：</span><br>
+        <span class="code-val">スマホ一覧で文字が読める</span><br>
+        <span class="code-val">人物と文字が重ならない</span><br>
+        <span class="code-val">画像内文字は最大2要素</span><br>
+        <span class="code-val">AIっぽい光る背景にしない</span><br><br>
+        <span class="code-key">禁止事項：</span><br>
+        <span class="code-val">企業ロゴを入れない</span><br>
+        <span class="code-val">小さいラベルを増やさない</span><br>
+        <span class="code-val">日時やCTAを入れない</span>
+      </div>
+
+      <p>この5項目があるだけで、AIの出力は安定します。AIへ「おしゃれにして」と頼むのではありません。AIへ、目的と制約を渡します。そのうえで、人間が見るポイントを決めます。</p>
+
+      <ul class="styled-list">
+        <li>読めるか</li>
+        <li>伝わるか</li>
+        <li>ブランドからズレていないか</li>
+        <li>使ってよい素材か</li>
+        <li>配信面で目立つか</li>
+        <li>次の修正指示が明確か</li>
+      </ul>
+
+      <p>この流れにすると、AIは脅威ではなく制作チームの一部になります。</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Section 5 -->
+    <section class="article-section" id="section5">
+      <div class="section-number">05 / 06</div>
+      <h2 class="section-title">やってはいけない適応</h2>
+
+      <p>AI時代に一番やってはいけないのは、ツール名だけを増やすことです。</p>
+      <p>「この画像生成AIがすごい」「このUI生成AIが速い」「このエージェントが便利」—— この追いかけ方は、すぐ疲れます。新しいツールは毎週出ます。重要なのは、ツール名ではなく役割分担です。</p>
+
+      <p>やってはいけない適応は、次の5つです。</p>
+
+      <ul class="dont-list">
+        <li>生成結果をそのまま納品する</li>
+        <li>プロンプトだけで差別化しようとする</li>
+        <li>AI利用をクライアントへ説明できない</li>
+        <li>権利確認を後回しにする</li>
+        <li>制作後の検証をしない</li>
+      </ul>
+
+      <p>特に危ないのは、プロンプトだけで差別化しようとすることです。プロンプトは大事です。ただし、プロンプトは制作工程の一部です。本当に差がつくのは、次の部分です。</p>
+
+      <ul class="styled-list">
+        <li><strong>何を作るか決める力</strong></li>
+        <li><strong>何を作らないか決める力</strong></li>
+        <li><strong>何を良い状態とするか決める力</strong></li>
+        <li><strong>どの出力を残すか判断する力</strong></li>
+        <li><strong>使える状態まで仕上げる力</strong></li>
+      </ul>
+
+      <div class="summary-box">
+        <p>AI時代のデザイナーは、<strong>作業者から制作設計者へ変わる</strong>必要があります。</p>
+        <p>肩書きが「AIイマジニア」でも「デザインクラフター」でも「ビルダー」でも、本質は同じです。AIと人間の仕事を分け、成果物を使える状態まで運ぶ人が強くなります。</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Section 6 -->
+    <section class="article-section" id="section6">
+      <div class="section-number">06 / 06</div>
+      <h2 class="section-title">今日やるチェックリスト</h2>
+
+      <p>次の案件で、最初にこのチェックリストを使ってください。</p>
+
+      <div class="checklist">
+        <div class="checklist-item"><div class="check-box"></div>作る目的を1文で書く</div>
+        <div class="checklist-item"><div class="check-box"></div>誰に見せるかを1人に絞る</div>
+        <div class="checklist-item"><div class="check-box"></div>AIに任せる作業を決める</div>
+        <div class="checklist-item"><div class="check-box"></div>人間が締める判断を決める</div>
+        <div class="checklist-item"><div class="check-box"></div>出力の合格基準を書く</div>
+        <div class="checklist-item"><div class="check-box"></div>禁止事項を書く</div>
+        <div class="checklist-item"><div class="check-box"></div>AI利用を説明する文を用意する</div>
+        <div class="checklist-item"><div class="check-box"></div>権利確認が必要な素材を分ける</div>
+        <div class="checklist-item"><div class="check-box"></div>初稿、修正、納品の流れを決める</div>
+        <div class="checklist-item"><div class="check-box"></div>結果を次の制作へ戻す項目を決める</div>
+      </div>
+
+      <div class="summary-box">
+        <p>AI時代に、デザイナーの価値が消えるわけではありません。ただし、価値の場所は変わります。</p>
+        <p>手を動かす量から、<strong>判断の質</strong>へ。単発制作から、<strong>制作フロー設計</strong>へ。見た目の修正から、<strong>目的・実装・検証までの接続</strong>へ。</p>
+        <p>ここへ移動できる人が、AI時代のデザイナーとして残ります。</p>
+      </div>
+    </section>
+
+    <!-- References -->
+    <div class="references">
+      <h3>参照リンク</h3>
+      <ul>
+        <li>Imagining Design Workflows in Agentic AI Futures — <a href="https://arxiv.org/abs/2509.20731">arxiv.org/abs/2509.20731</a></li>
+        <li>AI Skills Improve Job Prospects: Causal Evidence from a Hiring Experiment — <a href="https://arxiv.org/abs/2601.13286">arxiv.org/abs/2601.13286</a></li>
+        <li>TechRadar: 75% of web designers now fear AI more than shrinking budgets — <a href="https://www.techradar.com/pro/website-hosting/75-percent-of-web-designers-now-fear-ai-more-than-shrinking-budgets-how-ai-is-reshaping-web-design-and-how-web-pros-can-adapt">techradar.com</a></li>
+        <li>The Verge: Figma Make と MCP連携 — <a href="https://www.theverge.com/news/783828/figma-make-ai-app-coding-mcp-server-update">theverge.com</a></li>
+        <Li>「AIイマジニア」「デザイン・クラフター」「ビルダー」　なぜデザイン業界に突如としてハイブリッド職が溢れ始めたのか<a href="https://designers-union.com/blog/archives/12723">DESIGNERS UNION</a></Li>
+        <Li>「AIイマジニア」「デザインクラフター」「ビルダー」――デザイン業界に突如現れたフランケンジョブの正体<a href="https://www.unprinted.design/news/ai-design-frankenjobs-new-roles-2026/">unprinted</a></Li>
+        <Li><a href="">hoge</a></Li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>N.Yamamoto / 2026年6月</p>
+</footer>
+
+</body>
+</html>
